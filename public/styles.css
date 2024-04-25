@@ -1,0 +1,69 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+.header {
+    background-color: #4CAF50;
+    color: #ffffff;
+    text-align: center;
+    padding: 30px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+input[type="text"], input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+input[type="submit"], button {
+    background-color: #008CBA;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+input[type="submit"]:hover, button:hover {
+    background-color: #005f73;
+}
+.balance-display, .transaction-info {
+    background-color: #e8f0fe;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 4px;
+    border-left: 5px solid #4CAF50;
+}
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+    .header {
+        padding: 20px;
+    }
+}
+:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+}
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
