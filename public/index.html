@@ -34,6 +34,9 @@
             <button type="submit">Get Balance</button>
         </form>
         <div id="balanceResult"></div>
+
+        <h2>Additional Actions</h2>
+        <button id="newActionButton">Click Me!</button>
     </div>
 
     <script>
@@ -41,7 +44,6 @@
         const signer = provider.getSigner();
         const contractAddress = "YOUR_CONTRACT_ADDRESS"; // Replace with actual contract address
         const abi = [
-            // Insert ABI here
             "function totalSupply() view returns (uint256)",
             "function balanceOf(address) view returns (uint256)",
             "function transfer(address to, uint amount) returns (bool)",
@@ -52,6 +54,7 @@
             getTotalSupply();
             document.getElementById('transferForm').addEventListener('submit', transferTokens);
             document.getElementById('balanceForm').addEventListener('submit', getBalance);
+            document.getElementById('newActionButton').addEventListener('click', additionalAction);
         });
 
         async function getTotalSupply() {
@@ -80,6 +83,10 @@
             } catch (error) {
                 document.getElementById('balanceResult').innerText = 'Failed to get balance: ' + error.message;
             }
+        }
+
+        function additionalAction() {
+            alert('Button clicked. Implement your action here.');
         }
     </script>
 </body>
