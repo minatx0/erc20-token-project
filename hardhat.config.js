@@ -3,7 +3,12 @@ require("@nomiclabs/hardhat-ethers");
 require("dotenv").config();
 
 task("network-name", "Prints the network name", async (taskArgs, hre) => {
-  console.log("Network:", hre.network.name);
+  try {
+    console.log("Network:", hre.network.name);
+  } catch (error) {
+    console.error("Failed to print the network name:", error.message);
+    process.exit(1);
+  }
 });
 
 module.exports = {
@@ -34,3 +39,11 @@ module.exports = {
     artifacts: "./artifacts"
   },
 };
+
+(async () => {
+  try {
+  } catch (error) {
+    console.error("An error occurred during the script execution:", error);
+    process.exit(1);
+  }
+})();
