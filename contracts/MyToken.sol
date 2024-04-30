@@ -12,6 +12,7 @@ contract MyToken {
     mapping(address => uint256) private addressToBalance;
     mapping(address => mapping(address => uint256)) private allowances;
     mapping(address => bool) public authorizedMinters;
+    mapping(address => mapping(address => uint256)) public delegatedAmounts; 
 
     event TokenTransfer(address indexed from, address indexed to, uint256 value);
     event ApprovalGranted(address indexed tokenOwner, address indexed spender, uint256 value);
@@ -20,6 +21,7 @@ contract MyToken {
     event MinterAdded(address indexed minterAddress);
     event MinterRemoved(address indexed minterAddress);
     event TokenBurned(address indexed tokenHolder, uint256 value);
+    event TokensDelegated(address indexed from, address indexed to, uint256 value); 
 
     modifier onlyContractOwner() {
         require(msg.sender == contractOwner, "Not owner");
@@ -115,5 +117,20 @@ contract MyToken {
     function revokeMinter(address minterAddress) external onlyContractOwner {
         authorizedMinters[minterAddress] = false;
         emit MinterRemoved(minterAddress);
+    }
+
+    function delegateTokens(address to, uint256 amount) external returns (bool) {
+        require(addressToBalance[msg.sender] >= amount, "Insufficient balance to delegate.");
+        require(to != address(0), "Cannot delegate to zero address.");
+
+        addressToBalance[msg.sender] -= amount;
+        delegatedAmounts[msg.sender][to] += amount;
+
+        emit TokensDelegated(msg.sender, to, amount);
+        return true;
+    }
+
+    function getDelegatedBalance(address owner, address delegatee) external view returns (uint256) {
+        return delegatedAmounts[owner][delegatee];
     }
 }
