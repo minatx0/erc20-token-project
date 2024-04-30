@@ -2,48 +2,49 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
 require("dotenv").config();
 
-task("network-name", "Prints the network name", async (taskArgs, hre) => {
-  try {
-    console.log("Network:", hre.network.name);
-  } catch (error) {
-    console.error("Failed to print the network name:", error.message);
-    process.exit(1);
-  }
+task("network-name", "Prints the network name", async (_, hre) => {
+  console.log(`Network: ${hre.network.name}`);
+}).catch((error) => {
+  console.error(`Failed to print the network name: ${error.message}`);
+  process.exit(1);
 });
 
-module.exports = {
-  solidity: {
-    version: "0.8.4",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200
-      }
-    }
+const solidityConfig = {
+  version: "0.8.4",
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 200,
+    },
   },
-  networks: {
+};
+
+function getNetworkConfig() {
+  return {
     hardhat: {},
     rinkeby: {
       url: process.env.RINKEBY_URL,
-      accounts: [process.env.PRIVATE_KEY]
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
     },
     ropsten: {
       url: process.env.ROPSTEN_URL,
-      accounts: [process.env.PRIVATE_KEY]
-    }
-  },
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+    },
+  };
+}
+
+module.exports = {
+  solidity: solidityConfig,
+  networks: getNetworkConfig(),
   paths: {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./artifacts"
+    artifacts: "./artifacts",
   },
 };
 
-(async () => {
-  try {
-  } catch (error) {
-    console.error("An error occurred during the script execution:", error);
-    process.exit(1);
-  }
-})();
+(async () => {})().catch((error) => {
+  console.error(`An error occurred during the script execution: ${error}`);
+  process.exit(1);
+});
