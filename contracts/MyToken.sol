@@ -1,28 +1,36 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title MyToken
+ * @dev Implementation of an ERC20 token with additional features like minting, burning, and pausing.
+ */
 contract MyToken {
-    string public name = "MyToken"; // Improved clarity
-    string public symbol = "MTK"; // Improved clarity
-    uint8 public decimals = 18; // Improved clarity
-    uint256 private totalSupply; // Improved clarity
+    // State variables
+    string public name = "MyToken";
+    string public symbol = "MTK";
+    uint8 public decimals = 18;
+    uint256 private totalSupply_;
 
     address public owner;
-    bool public isTransferPaused = false; // Improved clarity
+    bool public isTransferPaused = false;
 
     mapping(address => uint256) private balances;
     mapping(address => mapping(address => uint256)) private allowed;
-    mapping(address => bool) public minters; // Improved clarity
-    mapping(address => mapping(address => uint256)) public delegatedBalances; // Improved clarity
+    mapping(address => bool) public minters; 
+    mapping(address => mapping(address => uint256)) public delegatedBalances; 
 
+    // Events
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
     event Paused();
     event Resumed();
-    event MinterAuthorized(address indexed minter); // Improved clarity
-    event MinterRevoked(address indexed minter); // Improved clarity
+    event MinterAuthorized(address indexed minter); 
+    event MinterRevoked(address indexed minter); 
     event Burned(address indexed from, uint256 value);
-    event Delegation(address indexed from, address indexed to, uint256 value); // Improved clarity
+    event Delegation(address indexed from, address indexed to, uint256 value); 
 
+    // Modifiers
     modifier onlyOwner() {
         require(msg.sender == owner, "Not owner");
         _;
@@ -38,15 +46,17 @@ contract MyToken {
         _;
     }
 
+    // Constructor
     constructor(uint256 initialSupply) {
         owner = msg.sender;
-        totalSupply = initialSupply * 10**uint256(decimals);
-        balances[msg.sender] = totalSupply;
+        totalSupply_ = initialSupply * 10**uint256(decimals);
+        balances[msg.sender] = totalSupply_;
         minters[msg.sender] = true;
     }
 
+    // Functions
     function getTotalSupply() external view returns (uint256) {
-        return totalSupply;
+        return totalSupply_;
     }
 
     function getBalance(address account) external view returns (uint256) {
@@ -55,13 +65,19 @@ contract MyToken {
 
     function transfer(address to, uint256 amount) external whenNotPaused returns (bool) {
         require(balances[msg.sender] >= amount, "Insufficient balance");
+        
         balances[msg.sender] -= amount;
         balances[to] += amount;
+        
         emit Transfer(msg.sender, to, amount);
         return true;
     }
 
-    function transferFrom(address from, address to, uint256 amount) external whenNotPaused returns (bool) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) external whenNotPaused returns (bool) {
         require(amount <= balances[from], "Insufficient balance");
         require(amount <= allowed[from][msg.sender], "Not authorized");
         
@@ -84,7 +100,7 @@ contract MyToken {
     }
 
     function mint(address to, uint256 amount) external canMint returns (bool) {
-        totalSupply += amount;
+        totalSupply_ += amount;
         balances[to] += amount;
         emit Transfer(address(0), to, amount);
         return true;
@@ -92,8 +108,10 @@ contract MyToken {
 
     function burn(uint256 amount) external returns (bool) {
         require(balances[msg.sender] >= amount, "Insufficient balance");
-        totalSupply -= amount;
+        
+        totalSupply_ -= amount;
         balances[msg.sender] -= amount;
+        
         emit Burned(msg.sender, amount);
         emit Transfer(msg.sender, address(0), amount);
         return true;
@@ -122,10 +140,10 @@ contract MyToken {
     function delegate(address to, uint256 amount) external returns (bool) {
         require(balances[msg.sender] >= amount, "Insufficient balance");
         require(to != address(0), "Invalid delegatee");
-
+        
         balances[msg.sender] -= amount;
         delegatedBalances[msg.sender][to] += amount;
-
+        
         emit Delegation(msg.sender, to, amount);
         return true;
     }
